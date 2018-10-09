@@ -18,31 +18,74 @@ storeChooseClass() {
   done < chooseNum.txt
 }
 
+buildClassList() {
+  rm -f classList.txt
+  for i in 1 2 3 4 5
+    do
+      for j in "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K"
+        do
+          echo $i$j >> "classList.txt"
+        done
+    done
+}
+
 checkClassTime() {
+  currentRow=1;
   while read timeRow;
   do
     echo $timeRow |
         awk '{
-          currentTime="";
           split ($0, timeArray, "");
-          for (i=1; i < length($0); i++) {
-              if (timeArray[i]~/[0-9]/){
-                if (timeArray[i+1]~/[A-Z]/ && timeArray[i+2]!~/[A-Z]/) {
-                  currentTime = current + TimetimeArray[i] + timeArray[i+1] + ",";
-                }
-                else if (timeArray[i+1]~/[A-Z]/ && timeArray[i+2]~/[A-Z]/ && timeArray[i+3]!~/[A-Z]/ ) {
-                  currentTime = currentTime + timeArray[i] + timeArray[i+1] + "," + timeArray[i] + timeArray[i+2] + ",";
-                }
-                else if (timeArray[i+1]~/[A-Z]/&& timeArray[i+2]~/[A-Z]/ && timeArray[i+3]~/[A-Z]/ && timeArray[i+3]!~/[A-Z]/) {
-                  currentTime = currentTime + timeArray[i] + timeArray[i+1] + "," + timeArray[i] + timeArray[i+2] + "," + timeArray[i] + timeArray[i+3] + ",";
-                }
+          currentDay = "";
+          for (i=1; i <= length($0); i++) {
+              if (timeArray[i]~/[0-9]/) {
+                currentDay = timeArray[i];
               }
-         }
-          print currentTime;
-       }'
-  done < chooseClassTime.txt
+              if (timeArray[i]~/[A-Z]/) {
+                currentClass = timeArray[i];
+                separateTime = currentDay currentClass;
+                printf "%s\n", separateTime > "modifyClassTime.txt"
+              }
+          }
+        }'
+    rm -f tmpClass.txt
+    awk NR==$currentRow chooseClassName.txt > "tmpClass.txt"
+    storeClassFromBuffer
+    currentRow=$((currentRow+1))
+  done <chooseClassTime.txt
 }
 
+storeClassFromBuffer() {
+  createClassBuffer
+  mergeBufferToClassList
+}
+
+createClassBuffer() {
+  fillTmpBuffer
+  appendTimeToBuffer
+}
+
+fillTmpBuffer() {
+  rm -f tmpClassBuffer.txt
+  while read time;
+    do
+      awk NR==1 tmpClass.txt >> "tmpClassBuffer.txt"
+    done < modifyClassTime.txt
+}
+
+appendTimeToBuffer() {
+  rm -f classBuffer.txt
+  paste -d " "  modifyClassTime.txt tmpClassBuffer.txt > classBuffer.txt
+}
+
+mergeBufferToClassList() {
+  sort classBuffer.txt | join -a 1 classList.txt - | awk '{print $0 > "classList.txt"}'
+}
+
+
+
+
+buildClassList
 storeChooseClass
 checkClassTime
 
