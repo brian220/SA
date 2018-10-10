@@ -18,7 +18,7 @@ storeChooseClass() {
   done < chooseNum.txt
 }
 
-buildClassList() {
+initialClassList() {
   rm -f classList.txt
   for i in 1 2 3 4 5
     do
@@ -27,6 +27,7 @@ buildClassList() {
           echo $i$j >> "classList.txt"
         done
     done
+    cp classList.txt tmpClassList.txt
 }
 
 checkClassTime() {
@@ -50,14 +51,17 @@ checkClassTime() {
         }'
     rm -f tmpClass.txt
     awk NR==$currentRow chooseClassName.txt > "tmpClass.txt"
-    storeClassFromBuffer
+    insertClassList
     currentRow=$((currentRow+1))
   done <chooseClassTime.txt
+  checkCollision
+  insertNewClass
+  rm -f tmpClassList.txt
 }
 
-storeClassFromBuffer() {
+insertClassList() {
   createClassBuffer
-  mergeBufferToClassList
+  mergeBufferToTmpClassList
 }
 
 createClassBuffer() {
@@ -78,14 +82,25 @@ appendTimeToBuffer() {
   paste -d " "  modifyClassTime.txt tmpClassBuffer.txt > classBuffer.txt
 }
 
-mergeBufferToClassList() {
-  sort classBuffer.txt | join -a 1 classList.txt - | awk '{print $0 > "classList.txt"}'
+mergeBufferToTmpClassList() {
+  sort classBuffer.txt | join -a 1 tmpClassList.txt - | awk '{print $0 > "tmpClassList.txt"}'
 }
 
+checkCollision() {
+  rm -f collisionList.txt
+  rm -f collision.txt
+  sort tmpClassList.txt | join -a 1 classList.txt - | awk '{print $0 > "collisionList.txt"}'
+  while read listRow;
+    do
+      echo $listRow | awk -F " " '{if(NF >= 3){print $0 >> "collision.txt"}}'
+    done < collisionList.txt
+}
 
+insertNewClass() {
 
+}
 
-buildClassList
+initialClassList
 storeChooseClass
 checkClassTime
 
