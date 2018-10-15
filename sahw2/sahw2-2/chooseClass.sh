@@ -1,23 +1,4 @@
 #!/bin/sh
-classMenu=""
-i=1
-while read line;
-do
-  classMenu=$classMenu"$i $line off "
-  i=$(($i+1))
-done<cos_information.txt
-chooseNum=`dialog --stdout --buildlist "Course Regestration System" 100 200 40 $classMenu`
-echo $chooseNum | awk -F " " '{for(i=1; i<=NF; i++) print $i > "chooseNum.txt" }'
-rm -f chooseClassName.txt
-rm -f chooseClassTime.txt
-storeChooseClass() {
-  while read line;
-  do
-    awk NR==$line cos_ename.txt >> "chooseClassName.txt"
-    awk NR==$line cos_time.txt >> "chooseClassTime.txt"
-  done < chooseNum.txt
-}
-
 initialClassList() {
   rm -f classList.txt
   for i in 1 2 3 4 5
@@ -28,6 +9,40 @@ initialClassList() {
         done
     done
     cp classList.txt tmpClassList.txt
+}
+
+buildClassOnOff() {
+  rm -f classOnOff.txt
+  while read line;
+     do
+       echo "off" >> classOnOff.txt
+     done < cos_information.txt
+
+  paste -d " " cos_information.txt classOnOff.txt | awk '{ print $0 > "classOnOff.txt" }'
+  # vim classOnOff.txt
+}
+
+showClassMenu() {
+  classMenu=""
+  i=1
+  while read line;
+    do
+      classMenu=$classMenu"$i $line "
+      i=$(($i+1))
+    done < classOnOff.txt
+  echo $classMenu
+  chooseNum=`dialog --stdout --buildlist "Course Regestration System" 100 200 40 $classMenu`
+  echo $chooseNum | awk -F " " '{for(i=1; i<=NF; i++) print i > "chooseNum.txt" }'
+}
+
+storeChooseClass() {
+  rm -f chooseClassName.txt
+  rm -f chooseClassTime.txt
+  while read line;
+  do
+    awk NR==$line cos_ename.txt >> "chooseClassName.txt"
+    awk NR==$line cos_time.txt >> "chooseClassTime.txt"
+  done < chooseNum.txt
 }
 
 checkClassTime() {
@@ -54,9 +69,6 @@ checkClassTime() {
     insertClassList
     currentRow=$((currentRow+1))
   done <chooseClassTime.txt
-  checkCollision
-  insertNewClass
-  rm -f tmpClassList.txt
 }
 
 insertClassList() {
@@ -97,10 +109,37 @@ checkCollision() {
 }
 
 insertNewClass() {
-
+  rm -f newClassList.txt
+  while read listRow;
+    do
+      echo $listRow | awk -F " " '{if(NF == 2){print $0 >> "newClassList.txt"}}'
+    done < collisionList.txt
+  if [ -e newClassList.txt ]
+    then
+      sort newClassList.txt | join -a 1 classList.txt - | awk '{print $0 > "classList.txt"}'
+    fi
 }
 
+updateClassOnOff() {
+  while read num;
+    do
+      sed -i.bak "$num s/off/on/g" classOnOff.txt
+    done < chooseNum.txt
+}
+
+buildClassOnOff
 initialClassList
-storeChooseClass
-checkClassTime
+showClassMenu
+updateClassOnOff
+
+
+for i in 1 2 3 4 5
+  do
+#    showClassTable
+#    storeChooseClass
+#    checkClassTime
+#    checkCollision
+#    insertNewClass
+#    rm -f tmpClassList
+ done
 
