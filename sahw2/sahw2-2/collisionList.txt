@@ -4,8 +4,8 @@
 1D
 1E
 1F
-1G Calculus.(I) Calculus.(I) Calculus.(I) Calculus.(I)
-1H Calculus.(I) Calculus.(I) Calculus.(I) Calculus.(I)
+1G Electrical.Circuits.and.Electronics.(I)..
+1H
 1I
 1J
 1K
@@ -26,15 +26,15 @@
 3D
 3E
 3F
-3G
-3H
+3G Career.Planning.and.Mentor.of.Hours
+3H Career.Planning.and.Mentor.of.Hours
 3I
 3J
 3K
 4A
 4B
-4C Calculus.(I) Calculus.(I) Calculus.(I) Calculus.(I)
-4D Calculus.(I) Calculus.(I) Calculus.(I) Calculus.(I)
+4C Electrical.Circuits.and.Electronics.(I)..
+4D Electrical.Circuits.and.Electronics.(I)..
 4E
 4F
 4G

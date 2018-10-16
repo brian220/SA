@@ -54,3 +54,9 @@ printClass "J"
 printClass "K"
 
 
+
+drawClassToTable () {
+
+  awk -F "|" '{OFS=FS}{if(NR == 3)$3="aaa";print }' table.txt > tmp && mv tmp table.txt
+}
+drawClassToTable

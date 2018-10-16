@@ -1,4 +1,3 @@
-1G Calculus.(I)
-1H Calculus.(I)
-4C Calculus.(I)
-4D Calculus.(I)
+1G Electrical.Circuits.and.Electronics.(I)..
+4C Electrical.Circuits.and.Electronics.(I)..
+4D Electrical.Circuits.and.Electronics.(I)..

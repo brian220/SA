@@ -32,7 +32,7 @@ showClassMenu() {
     done < classOnOff.txt
   echo $classMenu
   chooseNum=`dialog --stdout --buildlist "Course Regestration System" 100 200 40 $classMenu`
-  echo $chooseNum | awk -F " " '{for(i=1; i<=NF; i++) print i > "chooseNum.txt" }'
+  echo $chooseNum | awk -F " " '{for(i=1; i<=NF; i++) print $i > "chooseNum.txt" }'
 }
 
 storeChooseClass() {
@@ -120,6 +120,21 @@ insertNewClass() {
     fi
 }
 
+splitNameClassList() {
+  rm -f splitName.txt
+  while read classRow;
+    do
+      echo $classRow |
+        awk 'BEGIN {ORS=" "} {
+          print substr( $0, 1, 3) >> "splitName.txt"
+          for (i=4;i<=length($0);i+=13) {
+            print substr( $0, i, 13) >> "splitName.txt"
+          }
+            printf"\n" >> "splitName.txt"
+        }'
+    done < classList.txt
+}
+
 updateClassOnOff() {
   while read num;
     do
@@ -130,8 +145,13 @@ updateClassOnOff() {
 buildClassOnOff
 initialClassList
 showClassMenu
+storeChooseClass
+checkClassTime
+checkCollision
+insertNewClass
+rm -f tmpClassList
 updateClassOnOff
-
+splitNameClassList
 
 for i in 1 2 3 4 5
   do
