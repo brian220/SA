@@ -2,10 +2,12 @@
 rm -f table.txt
 start='x'
 startPoint='.'
+space=' '
 boundary='|'
-blankWideLittle='               '
-blankWide='                  '
-devideBlank='==================='
+blankWideLittle='          '
+blankWideAfterStart='            '
+blankWide='             '
+devideBlank='=============='
 singleDivide='='
 monday='Mon'
 tuesday='Tue'
@@ -13,23 +15,23 @@ wednesday='Wed'
 thursday='Thu'
 friday='Fri'
 
-printFirstLine() {  Firstline=$start$blankWideLittle$monday$boundary$blankWideLittle$tuesday$boundary$blankWideLittle$wednesday$boundary$blankWideLittle$thursday$boundary$blankWideLittle$friday$boundary
+printFirstLine() {  Firstline=$start$space$space$space$blankWideLittle$monday$boundary$blankWideLittle$tuesday$boundary$blankWideLittle$wednesday$boundary$blankWideLittle$thursday$boundary$blankWideLittle$friday$boundary
 printf "$Firstline\n" >> table.txt
 }
 
 printBlankLine() {
-  blankLine=$startPoint$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary
+  blankLine=$startPoint$space$space$boundary$startPoint$blankWideAfterStart$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary
   printf "$blankLine\n" >> table.txt
   printf "$blankLine\n" >> table.txt
   printf "$blankLine\n" >> table.txt
   printf "$blankLine\n" >> table.txt
 }
 printClassTimeLine() {
-  classLine=$1$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary
+  classLine=$1$space$space$boundary$startPoint$blankWideAfterStart$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary
   printf "$classLine\n" >> table.txt
 }
 printDevideLine() {
-  devideLine=$singleDivide$devideBlank$devideBlank$devideBlank$devideBlank$devideBlank
+  devideLine=$singleDivide$space$space$devideBlank$devideBlank$devideBlank$devideBlank$devideBlank$singleDevide$singleDivide
   printf "$devideLine\n" >> table.txt
 }
 
@@ -53,10 +55,58 @@ printClass "I"
 printClass "J"
 printClass "K"
 
-
-
-drawClassToTable () {
-
-  awk -F "|" '{OFS=FS}{if(NR == 3)$3="aaa";print }' table.txt > tmp && mv tmp table.txt
+buildSplitNameBuffer () {
+  rm -f splitNameTimeBuffer.txt
+  rm -f splitNameBuffer.txt
+  echo $1 |
+    awk -F " " '{
+      if (NF > 1) {
+        print $1 > "splitNameTimeBuffer.txt"
+        for(i = 2;i <= NF; i++) {
+          print $i >> "splitNameBuffer.txt"
+        }
+      }
+    }'
 }
-drawClassToTable
+
+insertSplitNameToTable () {
+  if [ -e splitNameTimeBuffer.txt ]
+  then
+    while read time
+      do
+        day=$(echo $time | cut -c1)
+        class=$(echo $time | cut -c2-2)
+        insertClassByDayClass $day $class
+      done < splitNameTimeBuffer.txt
+  fi
+}
+
+insertClassByDayClass () {
+  rm -f tmp
+  day=$1
+  class=$(printf "%d" "'${2}")
+  dayCol=$1
+  classRow=$(((class-65)*6+3))
+  while read splitNameRow;
+    do
+
+        awk -v col="$dayCol" -v row=$classRow -v name="$splitNameRow" -F "|" '{OFS=FS}{if(NR==row){
+          if(length(name) == 13) {
+            $(col+1)=name;
+          }
+          else if (length(name) > 0){
+            $(col+1)=sprintf("%-13s",name);
+          }
+        }print}' table.txt > tmp && mv tmp table.txt
+      classRow=$((classRow+1))
+    done < splitNameBuffer.txt
+}
+
+insertClassToTable () {
+  while read splitNameRow;
+    do
+      buildSplitNameBuffer "$splitNameRow"
+      insertSplitNameToTable
+    done < splitName.txt
+}
+insertClassToTable
