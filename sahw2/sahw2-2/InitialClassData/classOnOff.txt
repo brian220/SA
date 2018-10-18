@@ -1,4 +1,4 @@
-Calculus.(I)/1GH4CD-SA321 on
+Calculus.(I)/1GH4CD-SA321 off
 Calculus.(I)/1GH4CD-SC206 off
 Calculus.(I)/1GH4CD-SA214 off
 Calculus.(I)/4CD-SC207 off
@@ -9,11 +9,11 @@ Physics(I)/1CD4GH-SC110 off
 Physics(I)/1CD4GH-SA321 off
 Physics.(I)/1CD4GH-SA320 off
 Physics.(I)/1CD4GH-SC105 off
-Physics.(I)/1CD4GH-SC109 on
+Physics.(I)/1CD4GH-SC109 off
 Physics.(I)/1CD4GH-SC151 off
 Physics.(I)/1CD4GH-SC152 off
 Physics.(I)/4GH-SC001 off
-Career.Planning.and.Mentor.of.Hours/3GH-AB101 on
+Career.Planning.and.Mentor.of.Hours/3GH-AB101 off
 Competitive.Programming.(II)/5IJK-EC122 off
 Competitive.Programming(III)/6EFG-ED302 off
 LabVIEW.Programming.Language/2EF5B-EC315 off
@@ -24,7 +24,7 @@ Electrical.Circuits.and.Electronics.(I)../1G4CD-EC114 off
 Design.and.Implementation.of.IOT.Applications/2EFG-EC016 off
 Introduction.to.Cryptography/2G5CD-EC115 off
 Digital.Circuit.Lab./2IJK-EC220,5CD-EC114 off
-Introduction.to.Multimedia.Information.System/2EF5B-EC022 on
+Introduction.to.Multimedia.Information.System/2EF5B-EC022 off
 Introduction.to.Pattern.Recognition/2G5CD-ED302 off
 Introduction.to.Machine.Learning/2EF5B-ED117 off
 Network.Planning.and.Management.Practices/4IJK-EC115 off

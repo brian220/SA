@@ -36,9 +36,8 @@ classMenuOkButton() {
   fi
   cp ClassList/resetClassList.txt ClassList/tmpClassList.txt
 }
-
 classMenuExitButton() {
-  currentState="Exit"
+  currentState="ClassTable"
 }
 
 

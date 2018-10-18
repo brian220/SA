@@ -53,32 +53,3 @@
 5I
 5J
 5K
-1G Calculus.(I)
-1H Calculus.(I)
-3G Career.Planning.and.Mentor.of.Hours
-3H Career.Planning.and.Mentor.of.Hours
-4C Calculus.(I)
-4D Calculus.(I)
-1C Physics.(I)
-1D Physics.(I)
-1G Calculus.(I)
-1H Calculus.(I)
-3G Career.Planning.and.Mentor.of.Hours
-3H Career.Planning.and.Mentor.of.Hours
-4C Calculus.(I)
-4D Calculus.(I)
-4G Physics.(I)
-4H Physics.(I)
-1C Physics.(I)
-1D Physics.(I)
-1G Calculus.(I)
-1H Calculus.(I)
-2E Introduction.to.Multimedia.Information.System
-2F Introduction.to.Multimedia.Information.System
-3G Career.Planning.and.Mentor.of.Hours
-3H Career.Planning.and.Mentor.of.Hours
-4C Calculus.(I)
-4D Calculus.(I)
-4G Physics.(I)
-4H Physics.(I)
-5B Introduction.to.Multimedia.Information.System
