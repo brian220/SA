@@ -1,5 +1,5 @@
 #!/bin/sh
-cp resetTable.txt table.txt
+cp resetDetailtable.txt detailTable.txt
 buildSplitNameBuffer() {
   rm -f SplitName/splitNameTimeBuffer.txt
   rm -f SplitName/splitNameBuffer.txt
@@ -32,8 +32,6 @@ insertClassByDayClass() {
   class=$(printf "%d" "'${2}")
   dayCol=$1
   classRow=$(((class-65)*6+3))
-  if [ $class -lt 76 ] && [ $day -lt 6 ]
-  then
   while read splitNameRow;
     do
         awk -v col="$dayCol" -v row=$classRow -v name="$splitNameRow" -F "|" '{OFS=FS}{if(NR==row){
@@ -43,10 +41,9 @@ insertClassByDayClass() {
           else if (length(name) > 0){
             $(col+1)=sprintf("%-13s",name);
           }
-        }print}' table.txt > SplitName/tmp && mv SplitName/tmp table.txt
+        }print}'detailTable.txt > SplitName/tmp && mv SplitName/tmp detailTable.txt
       classRow=$((classRow+1))
     done < SplitName/splitNameBuffer.txt
-fi
 }
 
 insertClassToTable() {

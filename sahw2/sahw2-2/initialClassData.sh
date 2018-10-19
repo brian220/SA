@@ -12,9 +12,9 @@ storeCosInformation() {
 
 initialClassList() {
   rm -f ClassList/classList.txt
-  for i in 1 2 3 4 5
+  for i in 1 2 3 4 5 6 7
   do
-    for j in "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K"
+    for j in "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "M" "N" "X" "Y"
     do
       echo $i$j >> "ClassList/classList.txt"
     done
