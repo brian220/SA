@@ -1,6 +1,7 @@
 #!/bin/sh
 
 showClassMenu() {
+  echo -n > ChooseClassData/chooseNum.txt
   classMenu=""
   i=1
   while read line;
@@ -8,10 +9,9 @@ showClassMenu() {
       classMenu=$classMenu"$i $line "
       i=$(($i+1))
     done < InitialClassData/classOnOff.txt
-  echo $classMenu
   chooseNum=`dialog --stdout --buildlist "Course Regestration System" 100 200 40 $classMenu`
   choose=$?
-  echo $chooseNum | awk -F " " '{for(i=1; i<=NF; i++) print $i > "ChooseClassData/chooseNum.txt" }'
+  echo $chooseNum | awk -F " " '{for(i=1; i<=NF; i++) print $i >> "ChooseClassData/chooseNum.txt" }'
   if [ $choose = "0" ]
   then
     classMenuOkButton
@@ -36,14 +36,15 @@ classMenuOkButton() {
   fi
   cp ClassList/resetClassList.txt ClassList/tmpClassList.txt
 }
+
 classMenuExitButton() {
   currentState="ClassTable"
 }
 
 
 storeChooseClass() {
-  rm -f ChooseClassData/chooseClassName.txt
-  rm -f ChooseClassData/chooseClassTime.txt
+  echo -n > ChooseClassData/chooseClassName.txt
+  echo -n > ChooseClassData/chooseClassTime.txt
   while read line;
   do
     awk NR==$line InitialClassData/cosEName.txt >> "ChooseClassData/chooseClassName.txt"
@@ -52,6 +53,7 @@ storeChooseClass() {
 }
 
 buildTmpClassList() {
+  echo -n > ChooseClassData/modifyClassTime.txt
   currentRow=1;
   while read timeRow;
   do
@@ -113,6 +115,7 @@ checkCollision() {
 }
 
 insertNewClass() {
+  echo -n > ClassList/classList.txt
   while read listRow;
     do
       echo $listRow | awk -F " " '{if(NF == 2){print $0 >> "ClassList/classList.txt"}}'
@@ -120,7 +123,7 @@ insertNewClass() {
 }
 
 splitNameClassList() {
-  rm -f SplitName/splitNameClassList.txt
+  echo -n > SplitName/splitNameClassList.txt
   while read classRow;
     do
       echo $classRow |
@@ -139,14 +142,19 @@ insertClassToTable() {
 }
 
 updateClassOnOff() {
+  resetClassOnOff
   while read num;
     do
       sed -i.bak "$num s/off/on/g" InitialClassData/classOnOff.txt
     done < ChooseClassData/chooseNum.txt
+
+}
+
+resetClassOnOff() {
+  cp InitialClassData/resetClassOnOff.txt InitialClassData/classOnOff.txt
 }
 
 showCollision() {
-  echo "kk"
   collisionMessage=`cat ChooseClassData/collision.txt`
   echo "$collisionMessage"
   dialog --title "Class Collision, Please Choose Again" --msgbox "$collisionMessage" 100 100
@@ -161,8 +169,28 @@ collisionOkButton() {
   currentState="ShowMenu"
 }
 
-showClassTable() {
+showTable() {
+  if [ $currentTable = "BasicTable" ]
+  then
+    showBasicTable
+  elif [ $currentTable = "DetailTable" ]
+  then
+    showDetailTable
+  fi
+}
+
+showBasicTable() {
   dialog --backtitle "class table" --ok-label "add class" --extra-button --extra-label "options" --help-button --help-label "exit" --textbox table.txt 100 100
+  choose=$?
+  if [ $choose = "0" ]
+  then
+    classTableAddClassButton
+  fi
+}
+
+showDetailTable() {
+  sh buildDetailTable.sh
+  dialog --backtitle "class table" --ok-label "add class" --extra-button --extra-label "options" --help-button --help-label "exit" --textbox detailTable.txt 100 100
   choose=$?
   if [ $choose = "0" ]
   then
@@ -175,17 +203,21 @@ classTableAddClassButton() {
 }
 
 currentState="ShowMenu"
+currentTable="BasicTable"
 while true
 do
   if [ $currentState = "ShowMenu" ]
   then
-    showClassMenu
+    showClassMenu $currentMenu
   elif [ $currentState = "Collision" ]
   then
     showCollision
   elif [ $currentState = "ClassTable" ]
   then
-    showClassTable
+    showTable
+  elif [ $currentState = "Options" ]
+  then
+    showOptions
   elif [ $currentState = "Exit" ]
   then
     break

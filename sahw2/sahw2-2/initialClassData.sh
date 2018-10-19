@@ -19,7 +19,7 @@ initialClassList() {
       echo $i$j >> "ClassList/classList.txt"
     done
   done
-
+  cp  ClassList/classList.txt  ClassList/tmpClassList.txt
   cp  ClassList/classList.txt  ClassList/resetClassList.txt
 }
 
@@ -30,6 +30,7 @@ buildClassOnOff() {
     echo "off" >> InitialClassData/classOnOff.txt
   done < InitialClassData/cosInformation.txt
   paste -d " " InitialClassData/cosInformation.txt InitialClassData/classOnOff.txt | awk '{ print $0 > "InitialClassData/classOnOff.txt"  }'
+  cp InitialClassData/classOnOff.txt InitialClassData/resetClassOnOff.txt
 }
 
 initialClassData() {

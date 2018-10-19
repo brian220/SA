@@ -1,4 +1,5 @@
 #!/bin/sh
+cp resTable.txt table.txt
 buildSplitNameBuffer() {
   rm -f SplitName/splitNameTimeBuffer.txt
   rm -f SplitName/splitNameBuffer.txt

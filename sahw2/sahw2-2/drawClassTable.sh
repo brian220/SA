@@ -54,3 +54,4 @@ printClass "H"
 printClass "I"
 printClass "J"
 printClass "K"
+cp table.txt resTable.txt
