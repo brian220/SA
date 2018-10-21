@@ -5,9 +5,10 @@ curlTheClassTable() {
 
 storeCosInformation() {
   grep -o '"cos_ename": *"[^"]*"' InitialClassData/curldownFile.json | grep -o '"[^"]*"$' | sed -e 's/"//g'| sed -e 's/ /./g'> InitialClassData/cosEName.txt
-  grep -o '"cos_time": *"[^"]*"' InitialClassData/curldownFile.json | grep -o '"[^"]*"$' | sed -e 's/"//g' > InitialClassData/cosTimePlace.txt
-  sed -e 's/-[^$,]*//g' InitialClassData/cosTimePlace.txt >  InitialClassData/cosTime.txt
-  paste -d // InitialClassData/cosEName.txt InitialClassData/cosTimePlace.txt > InitialClassData/cosInformation.txt
+  grep -o '"cos_time": *"[^"]*"' InitialClassData/curldownFile.json | grep -o '"[^"]*"$' | sed -e 's/"//g' > InitialClassData/cosTimeRoom.txt
+  sed -e 's/-[^$,]*//g' InitialClassData/cosTimeRoom.txt > InitialClassData/cosTime.txt
+  sed -e 's/[^$,]*-//g' InitialClassData/cosTimeRoom.txt > InitialClassData/cosRoom.txt
+  paste -d // InitialClassData/cosEName.txt InitialClassData/cosTimeRoom.txt > InitialClassData/cosInformation.txt
 }
 
 initialClassList() {

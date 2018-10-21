@@ -1,6 +1,5 @@
 #!/bin/sh
-rm -f detailTable.txt
-start='x'
+rm -f Table/extraTable.txt
 startPoint='.'
 space=' '
 boundary='|'

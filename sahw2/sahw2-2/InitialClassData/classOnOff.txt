@@ -1,4 +1,4 @@
-Calculus.(I)/1GH4CD-SA321 off
+Calculus.(I)/1GH4CD-SA321 on
 Calculus.(I)/1GH4CD-SC206 off
 Calculus.(I)/1GH4CD-SA214 off
 Calculus.(I)/4CD-SC207 off
@@ -21,7 +21,7 @@ Mathematical.Logic\r/2CD4G-ED302 off
 Digital.Systems.Design/2B5EF-EC115 off
 Service.Learning.II/2A-AB101 off
 Electrical.Circuits.and.Electronics.(I)../1G4CD-EC114 off
-Design.and.Implementation.of.IOT.Applications/2EFG-EC016 off
+Design.and.Implementation.of.IOT.Applications/2EFG-EC016 on
 Introduction.to.Cryptography/2G5CD-EC115 off
 Digital.Circuit.Lab./2IJK-EC220,5CD-EC114 off
 Introduction.to.Multimedia.Information.System/2EF5B-EC022 off
@@ -31,7 +31,7 @@ Network.Planning.and.Management.Practices/4IJK-EC115 off
 Android.Progr/2EFG-EC324 off
 Intro..to.Network.Programming/1G4CD-ED117 off
 Introduction.to.Computer.Graphics/1CD3B-EDB27 off
-Computer.System.Administration/4IJK-EC122 off
+Computer.System.Administration/4IJK-EC122 on
 Introduction.to.Computers.and.Programming/1EF4B-EC115,4IJK-EC315 off
 Introduction.to.Computers.and.Programming/1EF-EC122,3IJK-EC315,4B-EC122 off
 Introduction.to.Computers.and.Programming/1EF-EC114,2IJK-EC315,4B-EC114 off

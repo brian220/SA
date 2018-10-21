@@ -1,5 +1,18 @@
 #!/bin/sh
 
+
+currentState="ShowMenu"
+usedTable="BasicTable"
+showFormat="ClassName"
+
+loadStateTag(){
+  if [ -e State/stateTag.txt ]
+  then
+    showFormat=$(awk NR==1 State/stateTag.txt)
+    usedTable=$(awk NR==2 State/stateTag.txt)
+  fi
+}
+
 showClassMenu() {
   echo -n > ChooseClassData/chooseNum.txt
   classMenu=""
@@ -16,7 +29,7 @@ showClassMenu() {
   then
     classMenuOkButton
   else
-    classMenuExitButton
+    classMenuCancelButton
   fi
 }
 
@@ -37,7 +50,7 @@ classMenuOkButton() {
   cp ClassList/resetClassList.txt ClassList/tmpClassList.txt
 }
 
-classMenuExitButton() {
+classMenuCancelButton() {
   currentState="ClassTable"
 }
 
@@ -204,6 +217,9 @@ solveTableChoose() {
   elif [ $1 = "3" ]
   then
     classTableOptionsButton
+  elif [ $1 = "2" ]
+  then
+    classTableExitButton
   fi
 }
 
@@ -215,6 +231,10 @@ classTableOptionsButton() {
   currentState="Options"
 }
 
+classTableExitButton() {
+  currentState="Exit"
+}
+
 showOptions() {
   option=`dialog --stdout --backtitle "options" --menu "Class Table Kind" 50 50 5\
   1 "Show Class Name" 2 "Show Class Room" 3 "Show Class Name, Extra Column" 4 "Show Class Room, Extra Column"`
@@ -223,6 +243,9 @@ showOptions() {
   then
     optionsOkButton $option
     currentState="ClassTable"
+  elif [ $choose = "1" ]
+  then
+    optionsCancelButton
   fi
 }
 
@@ -244,29 +267,51 @@ optionsOkButton() {
     showFormat="ClassRoom"
     usedTable="ExtraTable"
   fi
+  resetClassTableFormat
 }
 
+optionsCancelButton() {
+  currentState="ClassTable"
+}
 
-currentState="ShowMenu"
-usedTable="BasicTable"
-showFormat="ClassName"
+resetClassTableFormat() {
+  storeChooseClass
+  buildTmpClassList
+  insertNewClass
+  splitNameClassList
+  insertClassToTable
+  cp ClassList/resetClassList.txt ClassList/tmpClassList.txt
+}
 
-while true
-do
-  if [ $currentState = "ShowMenu" ]
-  then
-    showClassMenu $currentMenu
-  elif [ $currentState = "Collision" ]
-  then
-    showCollision
-  elif [ $currentState = "ClassTable" ]
-  then
-    showTable
-  elif [ $currentState = "Options" ]
-  then
-    showOptions
-  elif [ $currentState = "Exit" ]
-  then
-    break
-  fi
-done
+saveStateTag() {
+  echo $showFormat >> State/tmpStateTag.txt
+  echo $usedTable >> State/tmpStateTag.txt
+  cp State/tmpStateTag.txt State/stateTag.txt
+  rm -f State/tmpStateTag.txt
+}
+
+main() {
+  loadStateTag
+  while true
+  do
+    if [ $currentState = "ShowMenu" ]
+    then
+      showClassMenu $currentMenu
+    elif [ $currentState = "Collision" ]
+    then
+      showCollision
+    elif [ $currentState = "ClassTable" ]
+    then
+      showTable
+    elif [ $currentState = "Options" ]
+    then
+      showOptions
+    elif [ $currentState = "Exit" ]
+    then
+      break
+    fi
+  done
+  saveStateTag
+}
+
+main
