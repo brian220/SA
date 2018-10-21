@@ -1,5 +1,5 @@
 #!/bin/sh
-cp resetTable.txt table.txt
+cp Table/resetTable.txt Table/table.txt
 buildSplitNameBuffer() {
   rm -f SplitName/splitNameTimeBuffer.txt
   rm -f SplitName/splitNameBuffer.txt
@@ -43,7 +43,7 @@ insertClassByDayClass() {
           else if (length(name) > 0){
             $(col+1)=sprintf("%-13s",name);
           }
-        }print}' table.txt > SplitName/tmp && mv SplitName/tmp table.txt
+        }print}' Table/table.txt > SplitName/tmp && mv SplitName/tmp Table/table.txt
       classRow=$((classRow+1))
     done < SplitName/splitNameBuffer.txt
 fi

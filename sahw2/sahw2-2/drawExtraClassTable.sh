@@ -18,23 +18,23 @@ saturday='Sat'
 sunday='Sun'
 
 printFirstLine() {  Firstline=$start$space$space$space$blankWideLittle$monday$boundary$blankWideLittle$tuesday$boundary$blankWideLittle$wednesday$boundary$blankWideLittle$thursday$boundary$blankWideLittle$friday$boundary$blankWideLittle$saturday$boundary$blankWideLittle$sunday$boundary
-printf "$Firstline\n" >> detailTable.txt
+printf "$Firstline\n" >> Table/extraTable.txt
 }
 
 printBlankLine() {
   blankLine=$startPoint$space$space$boundary$startPoint$blankWideAfterStart$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary
-  printf "$blankLine\n" >> detailTable.txt
-  printf "$blankLine\n" >> detailTable.txt
-  printf "$blankLine\n" >> detailTable.txt
-  printf "$blankLine\n" >> detailTable.txt
+  printf "$blankLine\n" >> Table/extraTable.txt
+  printf "$blankLine\n" >> Table/extraTable.txt
+  printf "$blankLine\n" >> Table/extraTable.txt
+  printf "$blankLine\n" >> Table/extraTable.txt
 }
 printClassTimeLine() {
   classLine=$1$space$space$boundary$startPoint$blankWideAfterStart$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary$blankWide$boundary
-  printf "$classLine\n" >> detailTable.txt
+  printf "$classLine\n" >> Table/extraTable.txt
 }
 printDevideLine() {
   devideLine=$singleDivide$space$space$devideBlank$devideBlank$devideBlank$devideBlank$devideBlank$singleDevide$singleDivide$devideBlank$devideBlank
-  printf "$devideLine\n" >> detailTable.txt
+  printf "$devideLine\n" >> Table/extraTable.txt
 }
 
 printClass() {
@@ -60,4 +60,4 @@ printClass "Y"
 printClass "I"
 printClass "J"
 printClass "K"
-cp detailTable.txt resetDetailTable.txt
+cp  Table/extraTable.txt Table/resetExtraTable.txt

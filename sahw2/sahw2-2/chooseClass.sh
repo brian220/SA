@@ -47,7 +47,13 @@ storeChooseClass() {
   echo -n > ChooseClassData/chooseClassTime.txt
   while read line;
   do
-    awk NR==$line InitialClassData/cosEName.txt >> "ChooseClassData/chooseClassName.txt"
+    if [ $showFormat = "ClassName" ]
+    then
+      awk NR==$line InitialClassData/cosEName.txt >> "ChooseClassData/chooseClassName.txt"
+    elif [ $showFormat = "ClassRoom" ]
+    then
+      awk NR==$line InitialClassData/cosRoom.txt >> "ChooseClassData/chooseClassName.txt"
+    fi
     awk NR==$line InitialClassData/cosTime.txt >> "ChooseClassData/chooseClassTime.txt"
   done < ChooseClassData/chooseNum.txt
 }
@@ -139,6 +145,7 @@ splitNameClassList() {
 
 insertClassToTable() {
   sh insertClassToTable.sh
+  sh insertClassToExtraTable.sh
 }
 
 updateClassOnOff() {
@@ -147,7 +154,6 @@ updateClassOnOff() {
     do
       sed -i.bak "$num s/off/on/g" InitialClassData/classOnOff.txt
     done < ChooseClassData/chooseNum.txt
-
 }
 
 resetClassOnOff() {
@@ -170,40 +176,81 @@ collisionOkButton() {
 }
 
 showTable() {
-  if [ $currentTable = "BasicTable" ]
+  if [ $usedTable = "BasicTable" ]
   then
     showBasicTable
-  elif [ $currentTable = "DetailTable" ]
+  elif [ $usedTable = "ExtraTable" ]
   then
-    showDetailTable
+    showExtraTable
   fi
 }
 
 showBasicTable() {
-  dialog --backtitle "class table" --ok-label "add class" --extra-button --extra-label "options" --help-button --help-label "exit" --textbox table.txt 100 100
+  dialog --backtitle "class table" --ok-label "add class" --extra-button --extra-label "options" --help-button --help-label "exit" --textbox Table/table.txt 100 100
   choose=$?
-  if [ $choose = "0" ]
-  then
-    classTableAddClassButton
-  fi
+  solveTableChoose $choose
 }
 
-showDetailTable() {
-  sh buildDetailTable.sh
-  dialog --backtitle "class table" --ok-label "add class" --extra-button --extra-label "options" --help-button --help-label "exit" --textbox detailTable.txt 100 100
+showExtraTable() {
+  dialog --backtitle "class table" --ok-label "add class" --extra-button --extra-label "options" --help-button --help-label "exit" --textbox Table/extraTable.txt 100 110
   choose=$?
-  if [ $choose = "0" ]
+  solveTableChoose $choose
+}
+
+solveTableChoose() {
+ if [ $1 = "0" ]
   then
     classTableAddClassButton
+  elif [ $1 = "3" ]
+  then
+    classTableOptionsButton
   fi
 }
 
 classTableAddClassButton() {
-    currentState="ShowMenu"
+  currentState="ShowMenu"
 }
 
+classTableOptionsButton() {
+  currentState="Options"
+}
+
+showOptions() {
+  option=`dialog --stdout --backtitle "options" --menu "Class Table Kind" 50 50 5\
+  1 "Show Class Name" 2 "Show Class Room" 3 "Show Class Name, Extra Column" 4 "Show Class Room, Extra Column"`
+  choose=$?
+  if [ $choose = "0" ]
+  then
+    optionsOkButton $option
+    currentState="ClassTable"
+  fi
+}
+
+optionsOkButton() {
+  if [ $1 = "1" ]
+  then
+    showFormat="ClassName"
+    usedTable="BasicTable"
+  elif [ $1 = "2" ]
+  then
+    showFormat="ClassRoom"
+    usedTable="BasicTable"
+  elif [ $1 = "3" ]
+  then
+    showFormat="ClassName"
+    usedTable="ExtraTable"
+  elif [ $1 = "4" ]
+  then
+    showFormat="ClassRoom"
+    usedTable="ExtraTable"
+  fi
+}
+
+
 currentState="ShowMenu"
-currentTable="BasicTable"
+usedTable="BasicTable"
+showFormat="ClassName"
+
 while true
 do
   if [ $currentState = "ShowMenu" ]
@@ -223,4 +270,3 @@ do
     break
   fi
 done
-

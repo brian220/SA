@@ -1,5 +1,5 @@
 #!/bin/sh
-cp resetDetailtable.txt detailTable.txt
+cp Table/resetExtraTable.txt Table/extraTable.txt
 buildSplitNameBuffer() {
   rm -f SplitName/splitNameTimeBuffer.txt
   rm -f SplitName/splitNameBuffer.txt
@@ -28,10 +28,19 @@ insertSplitNameToTable() {
 
 insertClassByDayClass() {
   rm -f SplitName/tmp
-  day=$1
-  class=$(printf "%d" "'${2}")
   dayCol=$1
-  classRow=$(((class-65)*6+3))
+  rowNum=0
+  while read classOrder;
+  do
+    if [ $2 = $classOrder ]
+    then
+      break
+    fi
+    rowNum=$((rowNum+1))
+  done < SplitName/extraClassOrder.txt
+
+  classRow=$((rowNum*6+3))
+
   while read splitNameRow;
     do
         awk -v col="$dayCol" -v row=$classRow -v name="$splitNameRow" -F "|" '{OFS=FS}{if(NR==row){
@@ -41,17 +50,16 @@ insertClassByDayClass() {
           else if (length(name) > 0){
             $(col+1)=sprintf("%-13s",name);
           }
-        }print}'detailTable.txt > SplitName/tmp && mv SplitName/tmp detailTable.txt
+      }print}' Table/extraTable.txt > SplitName/tmp && mv SplitName/tmp Table/extraTable.txt
       classRow=$((classRow+1))
     done < SplitName/splitNameBuffer.txt
 }
 
-insertClassToTable() {
+insertClassToExtraTable() {
   while read splitNameRow;
     do
       buildSplitNameBuffer "$splitNameRow"
       insertSplitNameToTable
     done < SplitName/splitNameClassList.txt
 }
-
-insertClassToTable
+insertClassToExtraTable
