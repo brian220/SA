@@ -1,0 +1,61 @@
+#!/bin/sh
+arg1=$1
+arg2=$2
+arg3=$3
+
+updateRotationCount() {
+  if [ -z $arg2 ]
+  then
+    rotationCount=$arg2
+  else
+    rotationCount=999999
+  fi
+}
+
+createZbackup() {
+
+  if [ ! -e ${arg1}.buffer ]
+  then
+    touch ${arg1}.buffer
+  fi
+
+  updateRotationCount
+  
+  currentSnapNum=`wc -l < ${arg1}.buffer`
+  currentSnapNum=$((currentSnapNum - 1))
+  while [ $currentSnapNum -ge $rotationCount ] 
+  do
+    sed -i -e "1d" ${arg1}.buffer
+    currentSnapNum=$((currentSnapNum - 1))
+  done
+
+  time=`date +"%Y-%m-%d_%H:%M:%S"`
+  echo $arg1 " " $time >> ${arg1}.buffer
+}
+
+checkUsage() {
+  #check different usage
+  if [ $arg1 = "--list" ]
+  then
+    listZbackup  
+  elif [ $arg1 = "--delete" ]
+  then
+    deleteZbackup
+  elif [ $arg1 = "--export" ]
+  then
+    exportZbackup
+  elif [ $arg1 = "--import" ]
+  then
+    importZbackup
+  else
+    createZbackup
+  fi
+}
+
+if [ -z $arg1 ]
+then
+  echo "argument 1 is empty"
+else
+ createZbackup
+fi
+
