@@ -3,34 +3,35 @@ arg1=$1
 arg2=$2
 arg3=$3
 
+rotationcount=20
 updateRotationCount() {
   if [ -z $arg2 ]
   then
-    rotationCount=$arg2
+    rotationCount=20
   else
-    rotationCount=999999
+    rotationCount=$arg2
   fi
 }
 
-createZbackup() {
+destroyOldSnap() {
+ currentSnapNum=`zfs list -t snapshot | grep $arg1@ | awk 'END{print NR}'`
+ while [ $currentSnapNum -ge $rotationCount ]
+ do
+   destroy=`zfs list -t snapshot | grep $arg1@ | awk -F " " '{if(NR==1)print $1}'`
+   zfs destroy -r $destroy
+   currentSnapNum=`zfs list -t snapshot | grep $arg1@ | awk 'END{print NR}'`
+ done
+}
 
-  if [ ! -e ${arg1}.buffer ]
-  then
-    touch ${arg1}.buffer
-  fi
-
-  updateRotationCount
-  
-  currentSnapNum=`wc -l < ${arg1}.buffer`
-  currentSnapNum=$((currentSnapNum - 1))
-  while [ $currentSnapNum -ge $rotationCount ] 
-  do
-    sed -i -e "1d" ${arg1}.buffer
-    currentSnapNum=$((currentSnapNum - 1))
-  done
-
+createNewSnap() {
   time=`date +"%Y-%m-%d_%H:%M:%S"`
-  echo $arg1 " " $time >> ${arg1}.buffer
+  zfs snapshot $arg1@$time
+}
+
+createZbackup() {
+  updateRotationCount
+  destroyOldSnap
+  createNewSnap
 }
 
 checkUsage() {
