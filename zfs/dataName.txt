@@ -1,6 +1,3 @@
 DataSet
 mypool
 mypool
-mypool/hidden
-mypool/hidden
-mypool/hidden

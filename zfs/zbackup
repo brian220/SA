@@ -17,8 +17,8 @@ destroyOldSnap() {
  currentSnapNum=`zfs list -t snapshot | grep $arg1@ | awk 'END{print NR}'`
  while [ $currentSnapNum -ge $rotationCount ]
  do
-   destroy=`zfs list -t snapshot | grep $arg1@ | awk -F " " '{if(NR==1)print $1}'`
-   zfs destroy -r $destroy
+   target=`zfs list -t snapshot | grep $arg1@ | awk -F " " '{if(NR==1)print $1}'`
+   zfs destroy -r $target
    currentSnapNum=`zfs list -t snapshot | grep $arg1@ | awk 'END{print NR}'`
  done
 }
@@ -61,7 +61,6 @@ listSpecific() {
   getArgTime
   printList
 }
-
 
 getAllName() {
   zfs list -t snapshot | awk -F " " '{ print $1 }' | sed -e 's/@[^$,]*//g' > dataName.txt
@@ -107,6 +106,74 @@ listZbackup() {
   else
     listSpecific
   fi
+}
+
+getDeleteDataFile() {
+  zfs list -t snapshot | grep $arg2@ | awk -F " " '{ print $1 }' > deleteFile.txt
+}
+
+deleteDataWholeFile() {
+  while read line;
+  do
+    zfs destroy -r $line   
+  done < deleteFile.txt
+}
+
+deleteData() {
+  getDeleteDataFile
+  deleteDataWholeFile
+}
+
+deleteDataByID() {
+  target=`awk NR==$arg3 deleteFile.txt`
+  zfs destroy -r $target
+}
+
+deleteSpecific() {
+  getDeleteDataFile
+  deleteDataByID
+}
+
+deleteZbackup() {
+  if [ -z $arg3 ]
+  then 
+    deleteData
+  else
+    deleteSpecific
+  fi
+}
+
+sendID=1
+sendData=""
+updateID(){
+  if [ -z $arg3 ]
+  then
+    sendID=1
+  else
+    sendID=$arg3
+  fi
+}
+
+getSendData() {
+  zfs list -t snapshot | grep $arg2@ | awk -F " " '{ print $1 }' > sendData.txt
+  sendData=`awk NR==$sendID sendData.txt`
+}
+
+exportData() {
+  backUpName=`echo $sendData | sed -e 's/@[^$,]*//g'` 
+  backUpTime=`date +"%Y-%m-%d"`
+  echo $backUpName
+  zfs send $sendData | xz | openssl enc -aes-256-cbc -a -salt > $backUpName@$backUpTime.xz.enc
+}
+
+exportZbackup() {
+  updateID
+  getSendData
+  exportData
+}
+
+importZbackUp() {
+  
 }
 
 createZbackup() {
