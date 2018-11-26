@@ -28,6 +28,87 @@ createNewSnap() {
   zfs snapshot $arg1@$time
 }
 
+getArgID() {
+  echo "ID" > dataID.txt
+  i=1
+  currentSnapNum=`zfs list -t snapshot | grep $arg2@ | awk 'END{print NR}'`
+  echo "ID" > dataID.txt
+  while [ $i -le $currentSnapNum ]
+  do
+    echo $i >> dataID.txt 
+    i=$((i+1))
+  done  < dataName.txt
+}
+
+getArgName() {
+  echo "DataSet" > dataName.txt
+  zfs list -t snapshot | grep $arg2@ | awk -F " " '{ print $1 }' | sed -e 's/@[^$,]*//g' >> dataName.txt
+}
+
+getArgTime() {
+  echo "Time" > dataTime.txt
+  zfs list -t snapshot | grep $arg2@ | awk -F " " '{ print $1 }' | sed -e 's/[^$,]*@//g' >> dataTime.txt
+ 
+}
+
+printList() {
+  paste dataID.txt dataName.txt dataTime.txt | column -t
+}
+
+listSpecific() {
+  getArgID
+  getArgName
+  getArgTime
+  printList
+}
+
+
+getAllName() {
+  zfs list -t snapshot | awk -F " " '{ print $1 }' | sed -e 's/@[^$,]*//g' > dataName.txt
+  sed -i.bak '1s/.*/DataSet/' dataName.txt
+}
+
+getAllTime() {
+  zfs list -t snapshot | awk -F " " '{ print $1 }' | sed -e 's/[^$,]*@//g' > dataTime.txt
+  sed -i.bak '1s/.*/Time/' dataTime.txt
+}
+
+getAllID() {
+  rm -f dataID.txt
+  i=1
+  currentSnapNum=`zfs list -t snapshot | awk 'END{print NR}'`
+  curName="s"
+  prevName="s"
+  while read line;
+  do
+    curName=$line
+    if [ $curName != $prevName ]
+    then
+      i=1
+    fi
+    echo $i >> dataID.txt 
+    i=$((i+1))
+    prevName=$curName
+  done < dataName.txt
+  sed -i.bak '1s/.*/ID/' dataID.txt
+}
+
+listAll() {
+  getAllName
+  getAllTime
+  getAllID
+  printList
+}
+
+listZbackup() {
+  if [ -z $arg2 ]
+  then
+    listAll
+  else
+    listSpecific
+  fi
+}
+
 createZbackup() {
   updateRotationCount
   destroyOldSnap
@@ -57,6 +138,6 @@ if [ -z $arg1 ]
 then
   echo "argument 1 is empty"
 else
- createZbackup
+ checkUsage
 fi
 
