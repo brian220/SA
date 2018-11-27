@@ -3,31 +3,6 @@ arg1=$1
 arg2=$2
 arg3=$3
 
-rotationcount=20
-updateRotationCount() {
-  if [ -z $arg2 ]
-  then
-    rotationCount=20
-  else
-    rotationCount=$arg2
-  fi
-}
-
-destroyOldSnap() {
- currentSnapNum=`zfs list -t snapshot | grep $arg1@ | awk 'END{print NR}'`
- while [ $currentSnapNum -ge $rotationCount ]
- do
-   target=`zfs list -t snapshot | grep $arg1@ | awk -F " " '{if(NR==1)print $1}'`
-   zfs destroy -r $target
-   currentSnapNum=`zfs list -t snapshot | grep $arg1@ | awk 'END{print NR}'`
- done
-}
-
-createNewSnap() {
-  time=`date +"%Y-%m-%d_%H:%M:%S"`
-  zfs snapshot $arg1@$time
-}
-
 getArgID() {
   echo "ID" > dataID.txt
   i=1
@@ -172,9 +147,46 @@ exportZbackup() {
   exportData
 }
 
-importZbackUp() {
-  
+importZbackup() {
+  deleteData
+  openssl enc -d -aes-256-cbc -a -in $arg3 | unxz | zfs receive -d -F $arg2  
 }
+
+rotationcount=20
+updateRotationCount() {
+  if [ -z $arg2 ]
+  then
+    rotationCount=20
+  else
+    rotationCount=$arg2
+  fi
+}
+
+rotationLog() {
+  echo "Rotate" $1
+}
+
+destroyOldSnap() {
+ currentSnapNum=`zfs list -t snapshot | grep $arg1@ | awk 'END{print NR}'`
+ while [ $currentSnapNum -ge $rotationCount ]
+ do
+   target=`zfs list -t snapshot | grep $arg1@ | awk -F " " '{if(NR==1)print $1}'`
+   zfs destroy -r $target
+   rotationLog $target
+   currentSnapNum=`zfs list -t snapshot | grep $arg1@ | awk 'END{print NR}'`
+ done
+}
+
+createLog() {
+  echo "Snap" $arg1@$1
+}
+
+createNewSnap() {
+  time=`date +"%Y-%m-%d_%H:%M:%S"`
+  zfs snapshot $arg1@$time
+  createLog $time
+}
+
 
 createZbackup() {
   updateRotationCount
